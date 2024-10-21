@@ -8,7 +8,7 @@ add_executable(
 target_link_libraries(
     ftest-aos
     PRIVATE
-    imtool-aos
+    imgaos
     GTest::gtest_main
     Microsoft.GSL::GSL
 )

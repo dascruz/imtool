@@ -8,7 +8,7 @@ add_executable(
 target_link_libraries(
     ftest-soa
     PRIVATE
-    imtool-soa
+    imgsoa
     GTest::gtest_main
     Microsoft.GSL::GSL
 )
