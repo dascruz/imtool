@@ -2,6 +2,7 @@
 add_library(
     imgsoa
     imagesoa.cpp
+        imagesoa.hpp
 )
 
 # Use this line only if you have dependencies from this library to GSL
