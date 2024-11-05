@@ -13,27 +13,15 @@ int main(int const argc, char * argv[]) {
   std::string const outputFilePath = args[ProgArgs::OUTPUT_FILE_INDEX];
   std::string const operation      = args[ProgArgs::OPERATION_INDEX];
 
-  if (operation == "info") {
-    ProgArgs::handleInfo(inputFilePath, argc);
-  } else if (operation == "maxlevel") {
-    ProgArgs::handleMaxLevel({.inputFilePath = inputFilePath,
-                              .maxLevelStr   = args[ProgArgs::EXTRA_ARG1_INDEX],
-                              .argc          = argc});
-  } else if (operation == "resize") {
-    ProgArgs::handleResize({.inputFilePath = inputFilePath,
-                            .widthStr      = args[ProgArgs::EXTRA_ARG1_INDEX],
-                            .heightStr     = args[ProgArgs::EXTRA_ARG2_INDEX],
-                            .argc          = argc});
-  } else if (operation == "cutfreq") {
-    ProgArgs::handleCutFreq({.inputFilePath = inputFilePath,
-                             .cutFreqStr    = args[ProgArgs::EXTRA_ARG1_INDEX],
-                             .argc          = argc});
-  } else if (operation == "compress") {
-    ProgArgs::handleCompress(
-        {.inputFilePath = inputFilePath, .outputFilePath = outputFilePath, .argc = argc});
-  } else {
-    ProgArgs::printErrorAndExit("Invalid option: " + operation, ProgArgs::ERROR_INVALID_ARGS);
-  }
+  ProgArgs::OperationArgs const operationArgs = {
+    .operation      = operation,
+    .inputFilePath  = inputFilePath,
+    .outputFilePath = outputFilePath,
+    .args           = std::vector(args.begin() + ProgArgs::ARG_COUNT_INFO, args.end()),
+    .argc           = argc,
+    .mode           = ProgArgs::MODE_AOS};
+
+  ProgArgs::handleOperation(operationArgs);
 
   return 0;
 }
