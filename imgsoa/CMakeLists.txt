@@ -1,9 +1,2 @@
-# Add to this list all files related to imgsoa library
-add_library(
-    imgsoa
-    imagesoa.cpp
-        imagesoa.hpp
-)
-
-# Use this line only if you have dependencies from this library to GSL
+add_library(imgsoa imagesoa.cpp)
 target_link_libraries(imgsoa PRIVATE common Microsoft.GSL::GSL)

@@ -1,8 +1,9 @@
-#include <iostream>
-#include <string>   // Para std::string
-#include <vector>   // Para std::vector
 #include "../common/metadata.hpp"
-#include "../imgsoa/imagesoa.hpp"
+#include "imagesoa.hpp"
+
+#include <iostream>
+#include <string>  // Para std::string
+#include <vector>  // Para std::vector
 
 namespace {
     constexpr int ARG_COUNT = 5;
