@@ -1,4 +1,5 @@
 #include <common/progargs.hpp>
+#include <imgaos/imageaos.hpp>
 #include <iostream>
 
 void ProgArgs::printErrorAndExit(std::string const & message, int const exitCode) {
@@ -13,11 +14,16 @@ void ProgArgs::handleInfo(OperationArgs const & operationArgs) {
                       ERROR_INVALID_ARGS);
   }
   std::cout << "Displaying metadata for: " << operationArgs.inputFilePath << '\n';
-  // if (operationArgs.mode == ProgArgs::MODE_SOA) {
-  //   // Handle structure of arrays mode
-  // } else if (operationArgs.mode == ProgArgs::MODE_AOS) {
-  //   // Handle array of structures mode
-  // }
+
+  if (operationArgs.mode == MODE_SOA) {
+  } else if (operationArgs.mode == MODE_AOS) {
+    ImageAOS::Image image;
+    if (!image.loadFromFile(operationArgs.inputFilePath)) {
+      std::cerr << "Failed to load the image from " << operationArgs.inputFilePath << '\n';
+      return;
+    }
+    image.displayMetadata();
+  }
 }
 
 void ProgArgs::handleMaxLevel(OperationArgs const & operationArgs) {
@@ -43,11 +49,20 @@ void ProgArgs::handleMaxLevel(OperationArgs const & operationArgs) {
 
   std::cout << "Applying max level: " << maxLevel << " to " << operationArgs.inputFilePath
             << " and saving to " << operationArgs.outputFilePath << '\n';
-  // if (operationArgs.mode == ProgArgs::MODE_SOA) {
-  //   // Handle structure of arrays mode
-  // } else if (operationArgs.mode == ProgArgs::MODE_AOS) {
-  //   // Handle array of structures mode
-  // }
+  if (operationArgs.mode == MODE_SOA) {
+  } else if (operationArgs.mode == MODE_AOS) {
+    ImageAOS::Image image;
+    if (!image.loadFromFile(operationArgs.inputFilePath)) {
+      std::cerr << "Failed to load the image from " << operationArgs.inputFilePath << '\n';
+      return;
+    }
+
+    image.modifyMaxLevel(maxLevel);
+
+    if (!image.saveToFile(operationArgs.outputFilePath)) {
+      std::cerr << "Failed to save the image to " << operationArgs.outputFilePath << '\n';
+    }
+  }
 }
 
 void ProgArgs::handleResize(OperationArgs const & operationArgs) {
