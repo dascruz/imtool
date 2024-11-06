@@ -2,34 +2,25 @@
 #include <imgaos/imageaos.hpp>
 #include <iostream>
 
-void ProgArgs::printErrorAndExit(std::string const & message, int const exitCode) {
+[[noreturn]] void ProgArgs::printErrorAndExit(std::string const & message, int const exitCode) {
   std::cerr << "Error: " << message << '\n';
   exit(exitCode);
 }
 
-void ProgArgs::handleInfo(OperationArgs const & operationArgs) {
-  if (operationArgs.argc != ARG_COUNT_INFO) {
+ProgArgs::OperationType ProgArgs::parseInfo(OperationArgs const & operationArgs) {
+  if (operationArgs.args.size() != ARG_COUNT_INFO) {
     printErrorAndExit("Invalid number of extra arguments for info: " +
-                          std::to_string(operationArgs.argc - ARG_COUNT_INFO),
+                          std::to_string(operationArgs.args.size() - ARG_COUNT_INFO),
                       ERROR_INVALID_ARGS);
   }
-  std::cout << "Displaying metadata for: " << operationArgs.inputFilePath << '\n';
 
-  if (operationArgs.mode == MODE_SOA) {
-  } else if (operationArgs.mode == MODE_AOS) {
-    ImageAOS::Image image;
-    if (!image.loadFromFile(operationArgs.inputFilePath)) {
-      std::cerr << "Failed to load the image from " << operationArgs.inputFilePath << '\n';
-      return;
-    }
-    image.displayMetadata();
-  }
+  return Info;
 }
 
-void ProgArgs::handleMaxLevel(OperationArgs const & operationArgs) {
-  if (operationArgs.argc != ARG_COUNT_MAXLEVEL) {
+ProgArgs::OperationType ProgArgs::parseMaxLevel(OperationArgs const & operationArgs) {
+  if (operationArgs.args.size() != ARG_COUNT_MAXLEVEL) {
     printErrorAndExit("Invalid number of extra arguments for maxlevel: " +
-                          std::to_string(operationArgs.argc - ARG_COUNT_MAXLEVEL + 1),
+                          std::to_string(operationArgs.args.size() - ARG_COUNT_MAXLEVEL + 1),
                       ERROR_INVALID_ARGS);
   }
 
@@ -47,28 +38,13 @@ void ProgArgs::handleMaxLevel(OperationArgs const & operationArgs) {
     printErrorAndExit("Invalid maxlevel: " + operationArgs.args[0], ERROR_INVALID_ARGS);
   }
 
-  std::cout << "Applying max level: " << maxLevel << " to " << operationArgs.inputFilePath
-            << " and saving to " << operationArgs.outputFilePath << '\n';
-  if (operationArgs.mode == MODE_SOA) {
-  } else if (operationArgs.mode == MODE_AOS) {
-    ImageAOS::Image image;
-    if (!image.loadFromFile(operationArgs.inputFilePath)) {
-      std::cerr << "Failed to load the image from " << operationArgs.inputFilePath << '\n';
-      return;
-    }
-
-    image.modifyMaxLevel(maxLevel);
-
-    if (!image.saveToFile(operationArgs.outputFilePath)) {
-      std::cerr << "Failed to save the image to " << operationArgs.outputFilePath << '\n';
-    }
-  }
+  return MaxLevel;
 }
 
-void ProgArgs::handleResize(OperationArgs const & operationArgs) {
-  if (operationArgs.argc != ARG_COUNT_RESIZE) {
+ProgArgs::OperationType ProgArgs::parseResize(OperationArgs const & operationArgs) {
+  if (operationArgs.args.size() != ARG_COUNT_RESIZE) {
     printErrorAndExit("Invalid number of extra arguments for resize: " +
-                          std::to_string(operationArgs.argc - ARG_COUNT_RESIZE + 2),
+                          std::to_string(operationArgs.args.size() - ARG_COUNT_RESIZE + 2),
                       ERROR_INVALID_ARGS);
   }
 
@@ -90,61 +66,68 @@ void ProgArgs::handleResize(OperationArgs const & operationArgs) {
     printErrorAndExit("Invalid resize height: " + operationArgs.args[1], ERROR_INVALID_ARGS);
   }
 
-  std::cout << "Resizing " << operationArgs.inputFilePath << " to " << width << "x" << height
-            << " and saving to " << operationArgs.outputFilePath << '\n';
-  // if (operationArgs.mode == ProgArgs::MODE_SOA) {
-  //   // Handle structure of arrays mode
-  // } else if (operationArgs.mode == ProgArgs::MODE_AOS) {
-  //   // Handle array of structures mode
-  // }
+  return Resize;
 }
 
-void ProgArgs::handleCutFreq(OperationArgs const & operationArgs) {
-  if (operationArgs.argc != ARG_COUNT_CUTFREQ) {
+ProgArgs::OperationType ProgArgs::parseCutFreq(OperationArgs const & operationArgs) {
+  if (operationArgs.args.size() != ARG_COUNT_CUTFREQ) {
     printErrorAndExit("Invalid number of extra arguments for cutfreq: " +
-                          std::to_string(operationArgs.argc - ARG_COUNT_CUTFREQ + 1),
+                          std::to_string(operationArgs.args.size() - ARG_COUNT_CUTFREQ + 1),
                       ERROR_INVALID_ARGS);
   }
   int const cutFreq = std::stoi(operationArgs.args[0]);
   if (cutFreq <= 0) {
     printErrorAndExit("Invalid cutfreq: " + operationArgs.args[0], ERROR_INVALID_ARGS);
   }
-  std::cout << "Cutting frequency in " << operationArgs.inputFilePath << " with threshold "
-            << cutFreq << " and saving to " << operationArgs.outputFilePath << '\n';
-  // if (operationArgs.mode == ProgArgs::MODE_SOA) {
-  //   // Handle structure of arrays mode
-  // } else if (operationArgs.mode == ProgArgs::MODE_AOS) {
-  //   // Handle array of structures mode
-  // }
+
+  return CutFreq;
 }
 
-void ProgArgs::handleCompress(OperationArgs const & operationArgs) {
-  if (operationArgs.argc != ARG_COUNT_COMPRESS) {
+ProgArgs::OperationType ProgArgs::parseCompress(OperationArgs const & operationArgs) {
+  if (operationArgs.args.size() != ARG_COUNT_COMPRESS) {
     printErrorAndExit("Invalid number of extra arguments for compress: " +
-                          std::to_string(operationArgs.argc - ARG_COUNT_COMPRESS),
+                          std::to_string(operationArgs.args.size() - ARG_COUNT_COMPRESS),
                       ERROR_INVALID_ARGS);
   }
-  std::cout << "Compressing " << operationArgs.inputFilePath << " and saving to "
-            << operationArgs.outputFilePath << '\n';
-  // if (operationArgs.mode == ProgArgs::MODE_SOA) {
-  //   // Handle structure of arrays mode
-  // } else if (operationArgs.mode == ProgArgs::MODE_AOS) {
-  //   // Handle array of structures mode
-  // }
+
+  return Compress;
 }
 
-void ProgArgs::handleOperation(OperationArgs const & operationArgs) {
-  if (operationArgs.operation == "info") {
-    handleInfo(operationArgs);
-  } else if (operationArgs.operation == "maxlevel") {
-    handleMaxLevel(operationArgs);
-  } else if (operationArgs.operation == "resize") {
-    handleResize(operationArgs);
-  } else if (operationArgs.operation == "cutfreq") {
-    handleCutFreq(operationArgs);
-  } else if (operationArgs.operation == "compress") {
-    handleCompress(operationArgs);
-  } else {
-    printErrorAndExit("Invalid option: " + operationArgs.operation, ERROR_INVALID_ARGS);
+namespace {
+  ProgArgs::OperationType mapOperationToEnum(std::string const & operation) {
+    if (operation == "info") { return ProgArgs::OperationType::Info; }
+    if (operation == "maxlevel") { return ProgArgs::OperationType::MaxLevel; }
+    if (operation == "resize") { return ProgArgs::OperationType::Resize; }
+    if (operation == "cutfreq") { return ProgArgs::OperationType::CutFreq; }
+    if (operation == "compress") { return ProgArgs::OperationType::Compress; }
+    return ProgArgs::OperationType::Invalid;
+  }
+}  // namespace
+
+ProgArgs::OperationType ProgArgs::parseOperation(std::vector<std::string> const & args) {
+  if (args.size() < ARG_COUNT_MIN) {
+    printErrorAndExit("Invalid number of arguments: " + std::to_string(args.size() - 1),
+                      ERROR_INVALID_ARGS);
+  }
+
+  OperationArgs const operationArgs = {.inputFilePath  = args[INPUT_FILE_INDEX],
+                                       .outputFilePath = args[OUTPUT_FILE_INDEX],
+                                       .operation      = args[OPERATION_INDEX],
+                                       .args =
+                                           std::vector(args.begin() + ARG_COUNT_MIN, args.end())};
+
+  switch (mapOperationToEnum(operationArgs.operation)) {
+    case Info:
+      return parseInfo(operationArgs);
+    case MaxLevel:
+      return parseMaxLevel(operationArgs);
+    case Resize:
+      return parseResize(operationArgs);
+    case CutFreq:
+      return parseCutFreq(operationArgs);
+    case Compress:
+      return parseCompress(operationArgs);
+    default:
+      printErrorAndExit("Invalid option: " + operationArgs.operation, ERROR_INVALID_ARGS);
   }
 }
