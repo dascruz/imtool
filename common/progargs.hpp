@@ -4,39 +4,51 @@
 #include <string>
 #include <vector>
 
-class ProgArgs {
-  public:
-    enum OperationType : std::uint8_t { Info, MaxLevel, Resize, CutFreq, Compress, Invalid };
+namespace progargs {
+  enum OperationType : std::uint8_t { Info, MaxLevel, Resize, CutFreq, Compress, Invalid };
 
-    static constexpr int INPUT_FILE_INDEX  = 1;
-    static constexpr int OUTPUT_FILE_INDEX = 2;
-    static constexpr int OPERATION_INDEX   = 3;
+  struct OperationArgs {
+      std::string inputFilePath;
+      std::string outputFilePath;
+      std::string operation;
+      std::vector<std::string> args;
+  };
 
-    struct OperationArgs {
-        std::string operation;
-        std::string inputFilePath;
-        std::string outputFilePath;
-        std::vector<std::string> args;
-    };
+  struct ParsedOperationArgs {
+      std::string inputFilePath;
+      std::string outputFilePath;
+      OperationType operation;
+      std::vector<std::uint16_t> args;
 
-    [[nodiscard]] static OperationType parseOperation(std::vector<std::string> const & args);
+      explicit ParsedOperationArgs(std::string inputPath = "", std::string outputPath = "",
+                                   OperationType operationType          = Invalid,
+                                   std::vector<std::uint16_t> arguments = {})
+        : inputFilePath(std::move(inputPath)), outputFilePath(std::move(outputPath)),
+          operation(operationType), args(std::move(arguments)) { }
+  };
 
-  private:
-    static constexpr int ERROR_INVALID_ARGS = -1;
-    static constexpr int ARG_COUNT_MIN      = 4;
-    static constexpr int ARG_COUNT_INFO     = 0;
-    static constexpr int ARG_COUNT_MAXLEVEL = 1;
-    static constexpr int ARG_COUNT_RESIZE   = 2;
-    static constexpr int ARG_COUNT_CUTFREQ  = 1;
-    static constexpr int ARG_COUNT_COMPRESS = 0;
-    static constexpr int MAX_LEVEL_MIN      = 0;
-    static constexpr int MAX_LEVEL_MAX      = 65535;
+  [[nodiscard]] ParsedOperationArgs parseOperation(std::vector<std::string> const & args);
 
-    static OperationType parseInfo(OperationArgs const & operationArgs);
-    static OperationType parseMaxLevel(OperationArgs const & operationArgs);
-    static OperationType parseResize(OperationArgs const & operationArgs);
-    static OperationType parseCutFreq(OperationArgs const & operationArgs);
-    static OperationType parseCompress(OperationArgs const & operationArgs);
+  inline constexpr int INPUT_FILE_INDEX  = 1;
+  inline constexpr int OUTPUT_FILE_INDEX = 2;
+  inline constexpr int OPERATION_INDEX   = 3;
 
-    [[noreturn]] static void ProgArgs::printErrorAndExit(std::string const & message, int exitCode);
-};
+  inline constexpr int ARG_COUNT_MIN      = 4;
+  inline constexpr int ARG_COUNT_INFO     = 0;
+  inline constexpr int ARG_COUNT_MAXLEVEL = 1;
+  inline constexpr int ARG_COUNT_RESIZE   = 2;
+  inline constexpr int ARG_COUNT_CUTFREQ  = 1;
+  inline constexpr int ARG_COUNT_COMPRESS = 0;
+
+  inline constexpr int MAX_LEVEL_MIN = 1;
+  inline constexpr int MAX_LEVEL_MAX = 65535;
+
+  ParsedOperationArgs parseInfo(OperationArgs const & operationArgs);
+  ParsedOperationArgs parseMaxLevel(OperationArgs const & operationArgs);
+  ParsedOperationArgs parseResize(OperationArgs const & operationArgs);
+  ParsedOperationArgs parseCutFreq(OperationArgs const & operationArgs);
+  ParsedOperationArgs parseCompress(OperationArgs const & operationArgs);
+
+  [[noreturn]] void printErrorAndExit(std::string const & message);
+
+}  // namespace progargs

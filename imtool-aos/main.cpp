@@ -5,7 +5,7 @@
 int main(int const argc, char * argv[]) {
   std::vector<std::string> const args(argv, argv + argc);
 
-  ProgArgs::OperationType const operationType = ProgArgs::parseOperation(args);
+  progargs::ParsedOperationArgs const parsedOperationArgs = progargs::parseOperation(args);
 
   return 0;
 }
