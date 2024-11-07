@@ -1,1 +1,1 @@
-add_library(common progargs.cpp binaryio.hpp image.cpp)
+add_library(common progargs.cpp image.cpp)

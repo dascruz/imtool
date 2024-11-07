@@ -1,46 +1,17 @@
-#include "imageaos.hpp"
-
 #include <fstream>
+#include <imgaos/imageaos.hpp>
 #include <iostream>
-#include <sstream>
 #include <vector>
 
-namespace ImageAOS {
-  bool Image::readHeader(std::ifstream & file) {
-    std::string line;
-    if (!std::getline(file, line) || line != "P6") {
-      std::cerr << "Unsupported file format: " << line << '\n';
-      return false;
-    }
-
-    while (std::getline(file, line)) {
-      if (line[0] == '#') { continue; }
-
-      std::istringstream sizeStream(line);
-      sizeStream >> width_ >> height_;
-      break;
-    }
-
-    file >> maxColorValue_;
-    file.ignore();
-
-    if (maxColorValue_ < MIN_COLOR_VALUE || maxColorValue_ > MAX_COLOR_VALUE_16BIT) {
-      std::cerr << "Unsupported max color value: " << maxColorValue_ << " (must be between "
-                << MIN_COLOR_VALUE << " and " << MAX_COLOR_VALUE_16BIT << ").\n";
-      return false;
-    }
-
-    return true;
-  }
-
+namespace imageaos {
   bool Image::readPixelData(std::ifstream & file) {
-    pixels_.resize(static_cast<std::vector<Pixel>::size_type>(width_) *
-                   static_cast<std::vector<Pixel>::size_type>(height_));
+    pixels_.resize(static_cast<std::vector<Pixel>::size_type>(getWidth()) *
+                   static_cast<std::vector<Pixel>::size_type>(getHeight()));
 
-    int const scaleFactor = (maxColorValue_ > MAX_COLOR_VALUE_8BIT) ? 2 : 1;
+    int const scaleFactor = (getMaxColorValue() > MAX_COLOR_VALUE_8BIT) ? 2 : 1;
 
-    for (int yPos = 0; yPos < height_; ++yPos) {
-      for (int xPos = 0; xPos < width_; ++xPos) {
+    for (int yPos = 0; yPos < getHeight(); ++yPos) {
+      for (int xPos = 0; xPos < getWidth(); ++xPos) {
         Pixel & pixel = getPixel(xPos, yPos);
 
         int const red   = (scaleFactor == 2) ? (file.get() << 8 | file.get()) : file.get();
@@ -52,9 +23,10 @@ namespace ImageAOS {
           return false;
         }
 
-        pixel.setRed(static_cast<unsigned char>(red * MAX_COLOR_VALUE_8BIT / maxColorValue_));
-        pixel.setGreen(static_cast<unsigned char>(green * MAX_COLOR_VALUE_8BIT / maxColorValue_));
-        pixel.setBlue(static_cast<unsigned char>(blue * MAX_COLOR_VALUE_8BIT / maxColorValue_));
+        pixel.setRed(static_cast<unsigned char>(red * MAX_COLOR_VALUE_8BIT / getMaxColorValue()));
+        pixel.setGreen(
+            static_cast<unsigned char>(green * MAX_COLOR_VALUE_8BIT / getMaxColorValue()));
+        pixel.setBlue(static_cast<unsigned char>(blue * MAX_COLOR_VALUE_8BIT / getMaxColorValue()));
       }
     }
 
@@ -80,21 +52,16 @@ namespace ImageAOS {
     return pixelDataRead;
   }
 
-  bool Image::writeHeader(std::ofstream & file) const {
-    file << "P6\n" << width_ << " " << height_ << "\n" << maxColorValue_ << "\n";
-    return file.good();
-  }
-
   bool Image::writePixelData(std::ofstream & file) const {
-    int const scaleFactor = (maxColorValue_ > MAX_COLOR_VALUE_8BIT) ? 2 : 1;
+    int const scaleFactor = (getMaxColorValue() > MAX_COLOR_VALUE_8BIT) ? 2 : 1;
 
-    for (int yPos = 0; yPos < height_; ++yPos) {
-      for (int xPos = 0; xPos < width_; ++xPos) {
+    for (int yPos = 0; yPos < getHeight(); ++yPos) {
+      for (int xPos = 0; xPos < getWidth(); ++xPos) {
         auto const & [red, green, blue] = getPixel(xPos, yPos);
 
-        int const scaledRed   = red * maxColorValue_ / MAX_COLOR_VALUE_8BIT;
-        int const scaledGreen = green * maxColorValue_ / MAX_COLOR_VALUE_8BIT;
-        int const scaledBlue  = blue * maxColorValue_ / MAX_COLOR_VALUE_8BIT;
+        int const scaledRed   = red * getMaxColorValue() / MAX_COLOR_VALUE_8BIT;
+        int const scaledGreen = green * getMaxColorValue() / MAX_COLOR_VALUE_8BIT;
+        int const scaledBlue  = blue * getMaxColorValue() / MAX_COLOR_VALUE_8BIT;
 
         unsigned char const uRed =
             static_cast<unsigned char>(std::min(std::max(scaledRed, 0), 255));
@@ -142,9 +109,9 @@ namespace ImageAOS {
 
   void Image::displayMetadata() const noexcept {
     std::cout << "Image Metadata:\n"
-              << "Width: " << width_ << "\n"
-              << "Height: " << height_ << "\n"
-              << "Max Color Value: " << maxColorValue_ << "\n";
+              << "Width: " << getWidth() << "\n"
+              << "Height: " << getHeight() << "\n"
+              << "Max Color Value: " << getMaxColorValue() << "\n";
   }
 
   void Image::modifyMaxLevel(int const newMaxColorValue) noexcept {
@@ -154,9 +121,9 @@ namespace ImageAOS {
       return;
     }
 
-    if (maxColorValue_ <= MAX_COLOR_VALUE_8BIT && newMaxColorValue > MAX_COLOR_VALUE_8BIT) {
-      for (int yPos = 0; yPos < height_; ++yPos) {
-        for (int xPos = 0; xPos < width_; ++xPos) {
+    if (getMaxColorValue() <= MAX_COLOR_VALUE_8BIT && newMaxColorValue > MAX_COLOR_VALUE_8BIT) {
+      for (int yPos = 0; yPos < getHeight(); ++yPos) {
+        for (int xPos = 0; xPos < getWidth(); ++xPos) {
           Pixel & pixel = getPixel(xPos, yPos);
 
           pixel.setRed(
@@ -169,31 +136,34 @@ namespace ImageAOS {
       }
     }
 
-    else if (maxColorValue_ > MAX_COLOR_VALUE_8BIT && newMaxColorValue <= MAX_COLOR_VALUE_8BIT) {
-      for (int yPos = 0; yPos < height_; ++yPos) {
-        for (int xPos = 0; xPos < width_; ++xPos) {
+    else if (getMaxColorValue() > MAX_COLOR_VALUE_8BIT &&
+             newMaxColorValue <= MAX_COLOR_VALUE_8BIT) {
+      for (int yPos = 0; yPos < getHeight(); ++yPos) {
+        for (int xPos = 0; xPos < getWidth(); ++xPos) {
           Pixel & pixel = getPixel(xPos, yPos);
 
-          pixel.setRed(static_cast<unsigned char>(pixel.red * newMaxColorValue / maxColorValue_));
+          pixel.setRed(
+              static_cast<unsigned char>(pixel.red * newMaxColorValue / getMaxColorValue()));
           pixel.setGreen(
-              static_cast<unsigned char>(pixel.green * newMaxColorValue / maxColorValue_));
-          pixel.setBlue(static_cast<unsigned char>(pixel.blue * newMaxColorValue / maxColorValue_));
+              static_cast<unsigned char>(pixel.green * newMaxColorValue / getMaxColorValue()));
+          pixel.setBlue(
+              static_cast<unsigned char>(pixel.blue * newMaxColorValue / getMaxColorValue()));
         }
       }
     }
 
-    maxColorValue_ = newMaxColorValue;
+    setMaxColorValue(newMaxColorValue);
   }
 
   Pixel & Image::getPixel(int const xPos, int const yPos) {
     return pixels_.at((static_cast<std::vector<Pixel>::size_type>(yPos) *
-                       static_cast<std::vector<Pixel>::size_type>(width_)) +
+                       static_cast<std::vector<Pixel>::size_type>(getWidth())) +
                       static_cast<std::vector<Pixel>::size_type>(xPos));
   }
 
   Pixel const & Image::getPixel(int const xPos, int const yPos) const {
     return pixels_.at((static_cast<std::vector<Pixel>::size_type>(yPos) *
-                       static_cast<std::vector<Pixel>::size_type>(width_)) +
+                       static_cast<std::vector<Pixel>::size_type>(getWidth())) +
                       static_cast<std::vector<Pixel>::size_type>(xPos));
   }
-}  // namespace ImageAOS
+}  // namespace imageaos

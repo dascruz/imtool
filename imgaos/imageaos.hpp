@@ -1,9 +1,10 @@
 #pragma once
 
+#include <common/image.hpp>
 #include <string>
 #include <vector>
 
-namespace ImageAOS {
+namespace imageaos {
   constexpr int MIN_COLOR_VALUE       = 1;
   constexpr int MAX_COLOR_VALUE_8BIT  = 255;
   constexpr int MAX_COLOR_VALUE_16BIT = 65535;
@@ -31,12 +32,8 @@ namespace ImageAOS {
       int value = MAX_COLOR_VALUE_8BIT;
   };
 
-  class Image {
+  class Image : image::Image {
     public:
-      Image() : width_(0), height_(0), maxColorValue_(MAX_COLOR_VALUE_8BIT) { }
-
-      explicit Image(Dimensions dims, MaxColorValue maxColorValue = {MAX_COLOR_VALUE_8BIT});
-
       Pixel & getPixel(int xPos, int yPos);
       [[nodiscard]] Pixel const & getPixel(int xPos, int yPos) const;
 
@@ -45,21 +42,10 @@ namespace ImageAOS {
       void displayMetadata() const noexcept;
       void modifyMaxLevel(int newMaxColorValue) noexcept;
 
-      [[nodiscard]] int getWidth() const { return width_; }
-
-      [[nodiscard]] int getHeight() const { return height_; }
-
-      [[nodiscard]] int getMaxColorValue() const { return maxColorValue_; }
-
     private:
-      bool readHeader(std::ifstream & file);
       bool readPixelData(std::ifstream & file);
-      bool writeHeader(std::ofstream & file) const;
       bool writePixelData(std::ofstream & file) const;
 
-      int width_;
-      int height_;
-      int maxColorValue_;
       std::vector<Pixel> pixels_;
   };
-}  // namespace ImageAOS
+}  // namespace imageaos

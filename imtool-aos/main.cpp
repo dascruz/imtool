@@ -1,22 +1,22 @@
 #include <common/progargs.hpp>
+#include <imgaos/imageaos.hpp>
 #include <string>
 #include <vector>
 
 int main(int const argc, char * argv[]) {
   std::vector<std::string> const args(argv, argv + argc);
 
-  switch (progargs::ParsedOperationArgs const parsedOperationArgs = progargs::parseOperation(args);
-          parsedOperationArgs.operation) {
+  progargs::ParsedOperationArgs const parsedOperationArgs = progargs::parseOperation(args);
+  imageaos::Image image;
+  image.loadFromFile(parsedOperationArgs.inputFilePath);
+
+  switch (parsedOperationArgs.operation) {
     case progargs::Info:
+      image.displayMetadata();
       break;
     case progargs::MaxLevel:
-      break;
-    case progargs::Resize:
-      break;
-    case progargs::CutFreq:
-      break;
-    case progargs::Compress:
-      break;
+      image.modifyMaxLevel(parsedOperationArgs.args[0]);
+      if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return EXIT_FAILURE; }
     default:
       break;
   }
