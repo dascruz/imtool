@@ -5,7 +5,21 @@
 int main(int const argc, char * argv[]) {
   std::vector<std::string> const args(argv, argv + argc);
 
-  progargs::ParsedOperationArgs const parsedOperationArgs = progargs::parseOperation(args);
+  switch (progargs::ParsedOperationArgs const parsedOperationArgs = progargs::parseOperation(args);
+          parsedOperationArgs.operation) {
+    case progargs::Info:
+      break;
+    case progargs::MaxLevel:
+      break;
+    case progargs::Resize:
+      break;
+    case progargs::CutFreq:
+      break;
+    case progargs::Compress:
+      break;
+    default:
+      break;
+  }
 
   return 0;
 }

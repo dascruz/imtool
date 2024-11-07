@@ -42,13 +42,4 @@ namespace progargs {
 
   inline constexpr int MAX_LEVEL_MIN = 1;
   inline constexpr int MAX_LEVEL_MAX = 65535;
-
-  ParsedOperationArgs parseInfo(OperationArgs const & operationArgs);
-  ParsedOperationArgs parseMaxLevel(OperationArgs const & operationArgs);
-  ParsedOperationArgs parseResize(OperationArgs const & operationArgs);
-  ParsedOperationArgs parseCutFreq(OperationArgs const & operationArgs);
-  ParsedOperationArgs parseCompress(OperationArgs const & operationArgs);
-
-  [[noreturn]] void printErrorAndExit(std::string const & message);
-
 }  // namespace progargs
