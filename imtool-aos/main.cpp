@@ -18,6 +18,10 @@ int main(int const argc, char * argv[]) {
       image.modifyMaxLevel(parsedOperationArgs.args[0]);
       if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return EXIT_FAILURE; }
       break;
+    case progargs::Resize:
+      image.resize(parsedOperationArgs.args[0], parsedOperationArgs.args[1]);
+      if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return EXIT_FAILURE; }
+      break;
     case progargs::Compress:
       if (!image.saveToFileCompress(parsedOperationArgs.outputFilePath)) { return EXIT_FAILURE; }
       break;

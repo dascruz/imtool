@@ -4,6 +4,7 @@
 #include <vector>
 
 namespace imageaos {
+
   bool Image::readPixelData(std::ifstream & file) {
     pixels_.resize(getWidth() * getHeight());
 
@@ -16,15 +17,12 @@ namespace imageaos {
         unsigned short const red =
             scaleFactor == 2 ? static_cast<unsigned short>(file.get() << BYTE_SHIFT | file.get())
                              : static_cast<unsigned short>(file.get());
-        ;
         unsigned short const green =
             scaleFactor == 2 ? static_cast<unsigned short>(file.get() << BYTE_SHIFT | file.get())
                              : static_cast<unsigned short>(file.get());
-        ;
         unsigned short const blue =
             scaleFactor == 2 ? static_cast<unsigned short>(file.get() << BYTE_SHIFT | file.get())
                              : static_cast<unsigned short>(file.get());
-        ;
 
         if (file.eof()) {
           std::cerr << "Unexpected end of file while reading pixel data.\n";
@@ -132,4 +130,10 @@ namespace imageaos {
   Pixel const & Image::getPixel(unsigned long const xPos, unsigned long const yPos) const {
     return pixels_.at((yPos * getWidth()) + xPos);
   }
+
+  // Implementación de setPixel
+  void Image::setPixel(unsigned long xPos, unsigned long yPos, Pixel const & pixel) {
+    pixels_.at((yPos * getWidth()) + xPos) = pixel;
+  }
+
 }  // namespace imageaos
