@@ -35,4 +35,11 @@ namespace image {
     file << "P6\n" << width_ << " " << height_ << "\n" << maxColorValue_ << "\n";
     return file.good();
   }
+
+  bool Image::writeHeaderCompress(std::ofstream & file, unsigned long const colorTableSize) const {
+    file << "C6 " << width_ << " " << height_ << " " << maxColorValue_ << " " << colorTableSize
+         << "\n";
+    return file.good();
+  }
+
 }  // namespace image

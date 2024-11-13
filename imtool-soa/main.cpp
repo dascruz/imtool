@@ -1,9 +1,8 @@
+#include <common/progargs.hpp>
+#include <imgsoa/imagesoa.hpp>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <imgsoa/imagesoa.hpp>
-#include <common/progargs.hpp>
-
 
 int main(int const argc, char * argv[]) {
   std::vector<std::string> const args(argv, argv + argc);
@@ -15,13 +14,17 @@ int main(int const argc, char * argv[]) {
 
   switch (parsedOperationArgs.operation) {
     case progargs::Info:
-        image.displayMetadata();
-        break;
+      image.displayMetadata();
+      break;
     case progargs::MaxLevel:
-        image.modifyMaxLevel(parsedOperationArgs.args[0]);
-        if (!image.saveToFile(parsedOperationArgs.outputFilePath)) {return EXIT_FAILURE; }
+      image.modifyMaxLevel(parsedOperationArgs.args[0]);
+      if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return -1; }
+      break;
+    case progargs::Compress:
+      if (!image.saveToFileCompress(parsedOperationArgs.outputFilePath)) { return -1; }
+      break;
     default:
-        break;
+      break;
   }
 
   return 0;
