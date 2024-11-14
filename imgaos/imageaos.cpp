@@ -125,6 +125,14 @@ namespace imageaos {
     setMaxColorValue(newMaxColorValue);
   }
 
+  void Image::setPixel(unsigned long xPos, unsigned long yPos, const Pixel& pixel) {
+    if (xPos >= getWidth() || yPos >= getHeight()) {
+      std::cerr << "Error: Coordenadas fuera de rango (" << xPos << ", " << yPos << ")\n";
+      return;
+    }
+    pixels_[(yPos * getWidth()) + xPos] = pixel;
+  }
+
   Pixel & Image::getPixel(unsigned long const xPos, unsigned long const yPos) {
     return pixels_.at((yPos * getWidth()) + xPos);
   }

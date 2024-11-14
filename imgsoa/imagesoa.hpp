@@ -1,5 +1,4 @@
 #pragma once
-
 #include <common/image.hpp>
 #include <string>
 #include <vector>
@@ -8,8 +7,29 @@ namespace imagesoa {
   constexpr unsigned char BYTE_SHIFT = 8;
   constexpr unsigned char BYTE_MASK  = 0xFF;
 
-  class Image : public image::Image {
+  struct Dimensions {
+      unsigned long width;
+      unsigned long height;
+  };
+
+  class Image : image::Image {
     public:
+      /*
+      static constexpr unsigned short DEFAULT_MAX_COLOR_VALUE = 255;
+
+      Image() : maxColorValue_(DEFAULT_MAX_COLOR_VALUE) { }
+
+      explicit Image(Dimensions const dimensions,
+                     unsigned short const maxColorValue = DEFAULT_MAX_COLOR_VALUE)
+        : maxColorValue_(maxColorValue) {
+        setWidth(dimensions.width);
+        setHeight(dimensions.height);
+        red_.resize(getWidth() * getHeight());
+        green_.resize(getWidth() * getHeight());
+        blue_.resize(getWidth() * getHeight());
+      }
+      */
+
       [[nodiscard]] unsigned short getRed(unsigned long xPos, unsigned long yPos) const;
       [[nodiscard]] unsigned short getGreen(unsigned long xPos, unsigned long yPos) const;
       [[nodiscard]] unsigned short getBlue(unsigned long xPos, unsigned long yPos) const;
