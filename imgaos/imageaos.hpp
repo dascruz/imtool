@@ -45,7 +45,8 @@ namespace imageaos {
 
   class Image : image::Image {
     public:
-      Image() = default;
+      static constexpr unsigned short DEFAULT_MAX_COLOR_VALUE = 255;
+      Image()                                                 = default;
 
       // Constructor que recibe Dimensions y configura las dimensiones de la imagen
       explicit Image(Dimensions const & dimensions) {
@@ -55,8 +56,8 @@ namespace imageaos {
       }
 
       [[nodiscard]] unsigned long getWidth() const { return image::Image::getWidth(); }
-      [[nodiscard]] unsigned long getHeight() const { return image::Image::getHeight(); }
 
+      [[nodiscard]] unsigned long getHeight() const { return image::Image::getHeight(); }
 
       Pixel & getPixel(unsigned long xPos, unsigned long yPos);
       [[nodiscard]] Pixel const & getPixel(unsigned long xPos, unsigned long yPos) const;

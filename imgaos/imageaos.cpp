@@ -98,30 +98,6 @@ namespace imageaos {
     return pixelDataWritten;
   }
 
-  void Image::displayMetadata() const {
-    std::cout << "Image Metadata:\n"
-              << "Width: " << getWidth() << "\n"
-              << "Height: " << getHeight() << "\n"
-              << "Max Color Value: " << getMaxColorValue() << "\n";
-  }
-
-  void Image::modifyMaxLevel(unsigned short const newMaxColorValue) {
-    for (unsigned long yPos = 0; yPos < getHeight(); ++yPos) {
-      for (unsigned long xPos = 0; xPos < getWidth(); ++xPos) {
-        Pixel & pixel = getPixel(xPos, yPos);
-
-        pixel.setRed(
-            static_cast<unsigned short>(pixel.red * newMaxColorValue / getMaxColorValue()));
-        pixel.setGreen(
-            static_cast<unsigned short>(pixel.green * newMaxColorValue / getMaxColorValue()));
-        pixel.setBlue(
-            static_cast<unsigned short>(pixel.blue * newMaxColorValue / getMaxColorValue()));
-      }
-    }
-
-    setMaxColorValue(newMaxColorValue);
-  }
-
   Pixel & Image::getPixel(unsigned long const xPos, unsigned long const yPos) {
     return pixels_.at((yPos * getWidth()) + xPos);
   }
