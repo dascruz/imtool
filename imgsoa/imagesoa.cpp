@@ -97,5 +97,4 @@ namespace imagesoa {
 
     return pixelDataWritten;
   }
-
 }  // namespace imagesoa

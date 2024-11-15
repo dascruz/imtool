@@ -43,7 +43,7 @@ namespace imageaos {
       float y;
   };
 
-  class Image : image::Image {
+  class Image : public image::Image {
     public:
       static constexpr unsigned short DEFAULT_MAX_COLOR_VALUE = 255;
       Image()                                                 = default;
@@ -52,6 +52,13 @@ namespace imageaos {
       explicit Image(Dimensions const & dimensions) {
         setWidth(dimensions.width);
         setHeight(dimensions.height);
+        pixels_.resize(getWidth() * getHeight());
+      }
+
+      explicit Image(Dimensions const & dimensions, unsigned short const maxColorValue) {
+        setWidth(dimensions.width);
+        setHeight(dimensions.height);
+        setMaxColorValue(maxColorValue);
         pixels_.resize(getWidth() * getHeight());
       }
 
