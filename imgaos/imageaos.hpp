@@ -2,6 +2,7 @@
 
 #include <common/image.hpp>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace imageaos {
@@ -18,6 +19,10 @@ namespace imageaos {
       void setGreen(unsigned short const greenValue) { green = greenValue; }
 
       void setBlue(unsigned short const blueValue) { blue = blueValue; }
+
+      bool operator==(Pixel const & other) const {
+        return red == other.red && green == other.green && blue == other.blue;
+      }
   };
 
   class Image : image::Image {
@@ -29,10 +34,17 @@ namespace imageaos {
       [[nodiscard]] bool saveToFile(std::string const & filePath) const;
       void displayMetadata() const;
       void modifyMaxLevel(unsigned short newMaxColorValue);
+      [[nodiscard]] bool saveToFileCompress(std::string const & filePath) const;
 
     private:
       bool readPixelData(std::ifstream & file);
       bool writePixelData(std::ofstream & file) const;
+      [[nodiscard]] std::unordered_map<Pixel, unsigned long> getColorTable() const;
+      bool writeColorTable(std::ofstream & file,
+                           std::unordered_map<Pixel, unsigned long> const & colorTable) const;
+      bool
+          writePixelDataCompress(std::ofstream & file,
+                                 std::unordered_map<Pixel, unsigned long> const & colorTable) const;
 
       std::vector<Pixel> pixels_;
   };
