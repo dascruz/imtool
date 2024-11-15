@@ -25,6 +25,7 @@ namespace imagesoa {
     public:
       Image() = default;
 
+      // Constructor que recibe Dimensions y configura las dimensiones de la imagen
       explicit Image(Dimensions const & dimensions) {
         setWidth(dimensions.width);
         setHeight(dimensions.height);

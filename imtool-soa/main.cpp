@@ -1,9 +1,7 @@
-#include <iostream>
+#include <common/progargs.hpp>
+#include <imgsoa/imagesoa.hpp>
 #include <string>
 #include <vector>
-#include <imgsoa/imagesoa.hpp>
-#include <common/progargs.hpp>
-
 
 int main(int const argc, char * argv[]) {
   std::vector<std::string> const args(argv, argv + argc);
@@ -18,16 +16,16 @@ int main(int const argc, char * argv[]) {
       image.displayMetadata();
       break;
     case progargs::MaxLevel:
-      image.modifyMaxLevel(parsedOperationArgs.args[0]);
-      if (!image.saveToFile(parsedOperationArgs.outputFilePath)) {return EXIT_FAILURE; }
+      image.modifyMaxLevel(static_cast<unsigned short>(parsedOperationArgs.args[0]));
+      if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return -1; }
       break;
     case progargs::Resize:
       image.resize(parsedOperationArgs.args[0], parsedOperationArgs.args[1]);
-      if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return EXIT_FAILURE; }
+      if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return -1; }
       break;
     case progargs::CutFreq:
       image.cutfreq(parsedOperationArgs.args[0]);
-      if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return EXIT_FAILURE; }
+      if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return -1; }
       break;
     case progargs::Compress:
       if (!image.saveToFileCompress(parsedOperationArgs.outputFilePath)) { return -1; }
