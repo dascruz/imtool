@@ -52,7 +52,6 @@ namespace imagesoa {
       [[nodiscard]] bool saveToFileCompress(std::string const & filePath) const;
       void cutfreq(uint32_t n);
 
-    private:
       bool readPixelData(std::ifstream & file);
       bool writePixelData(std::ofstream & file) const;
       [[nodiscard]] std::unordered_map<image::Pixel, unsigned long> getColorTable() const;

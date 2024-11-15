@@ -28,8 +28,8 @@ namespace imageaos {
       // Función auxiliar para contar colores en la imagen
       [[nodiscard]] std::map<std::tuple<uint16_t, uint16_t, uint16_t>, int> countColors() const {
         std::map<std::tuple<uint16_t, uint16_t, uint16_t>, int> colorFrequency;
-        for (unsigned long y_pos = 0; y_pos < image.getHeight(); ++y_pos) {
-          for (unsigned long x_pos = 0; x_pos < image.getWidth(); ++x_pos) {
+        for (unsigned long y_pos = 0; y_pos < IMAGE_DIMENSIONS.height; ++y_pos) {
+          for (unsigned long x_pos = 0; x_pos < IMAGE_DIMENSIONS.width; ++x_pos) {
             Pixel const & pixel = image.getPixel(x_pos, y_pos);
             auto color          = std::make_tuple(pixel.red, pixel.green, pixel.blue);
             colorFrequency[color]++;
