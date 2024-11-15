@@ -54,6 +54,10 @@ namespace imageaos {
         pixels_.resize(getWidth() * getHeight());
       }
 
+      [[nodiscard]] unsigned long getWidth() const { return image::Image::getWidth(); }
+      [[nodiscard]] unsigned long getHeight() const { return image::Image::getHeight(); }
+
+
       Pixel & getPixel(unsigned long xPos, unsigned long yPos);
       [[nodiscard]] Pixel const & getPixel(unsigned long xPos, unsigned long yPos) const;
 

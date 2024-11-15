@@ -44,30 +44,22 @@ TEST(ImageResizeTest, ResizeMultipleFiles) {
 
   // Lista de archivos de entrada y sus correspondientes salidas esperadas
   std::vector<TestFile> const testFiles = {
-    {         .inputPath = "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/in/deer-large.ppm",
-     .expectedOutputPath =
-     "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/expected_outputs/deer-large-100.ppm" },
-    {         .inputPath = "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/in/deer-large.ppm",
-     .expectedOutputPath =
-     "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/expected_outputs/deer-large-1000.ppm"},
-    {         .inputPath = "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/in/deer-small.ppm",
-     .expectedOutputPath =
-     "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/expected_outputs/deer-small-100.ppm" },
-    {         .inputPath = "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/in/deer-small.ppm",
-     .expectedOutputPath =
-     "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/expected_outputs/deer-small-1000.ppm"},
-    {         .inputPath = "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/in/lake-large.ppm",
-     .expectedOutputPath =
-     "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/expected_outputs/lake-large-100.ppm" },
-    {         .inputPath = "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/in/lake-large.ppm",
-     .expectedOutputPath =
-     "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/expected_outputs/lake-large-1000.ppm"},
-    {         .inputPath = "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/in/lake-small.ppm",
-     .expectedOutputPath =
-     "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/expected_outputs/lake-small-100.ppm" },
-    {.inputPath          = "/home/maria/Escritorio/ARQUITECTURA COMPU/imtool.p/in/lake-small.ppm",
-     .expectedOutputPath = "/home/maria/Escritorio/ARQUITECTURA "
-     "COMPU/imtool.p/expected_outputs/lake-small-1000.ppm"                                    }
+    {.inputPath          = "./in/deer-large.ppm",
+     .expectedOutputPath = "./expected_outputs/deer-large-100.ppm" },
+    {.inputPath          = "./in/deer-large.ppm",
+     .expectedOutputPath = "./expected_outputs/deer-large-1000.ppm"},
+    {.inputPath          = "./in/deer-small.ppm",
+     .expectedOutputPath = "./expected_outputs/deer-small-100.ppm" },
+    {.inputPath          = "./in/deer-small.ppm",
+     .expectedOutputPath = "./expected_outputs/deer-small-1000.ppm"},
+    {.inputPath          = "./in/lake-large.ppm",
+     .expectedOutputPath = "./expected_outputs/lake-large-100.ppm" },
+    {.inputPath          = "./in/lake-large.ppm",
+     .expectedOutputPath = "./expected_outputs/lake-large-1000.ppm"},
+    {.inputPath          = "./in/lake-small.ppm",
+     .expectedOutputPath = "./expected_outputs/lake-small-100.ppm" },
+    {.inputPath          = "./in/lake-small.ppm",
+     .expectedOutputPath = "./expected_outputs/lake-small-1000.ppm"}
   };
 
   // Recorrer cada archivo de prueba
