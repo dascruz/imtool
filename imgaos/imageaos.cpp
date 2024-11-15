@@ -1,10 +1,9 @@
 #include <fstream>
 #include <imgaos/imageaos.hpp>
 #include <iostream>
-#include <vector>
+#include <string>
 
 namespace imageaos {
-
   bool Image::readPixelData(std::ifstream & file) {
     pixels_.resize(getWidth() * getHeight());
 
@@ -131,7 +130,6 @@ namespace imageaos {
     return pixels_.at((yPos * getWidth()) + xPos);
   }
 
-  // Implementación de setPixel
   void Image::setPixel(unsigned long xPos, unsigned long yPos, Pixel const & pixel) {
     pixels_.at((yPos * getWidth()) + xPos) = pixel;
   }

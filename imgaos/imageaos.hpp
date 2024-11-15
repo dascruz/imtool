@@ -1,9 +1,12 @@
 #pragma once
 
+#include <common/image.hpp>
+#include <cstdint>
+#include <map>
 #include <string>
 #include <unordered_map>
+#include <tuple>
 #include <vector>
-#include <common/image.hpp>
 
 namespace imageaos {
   constexpr unsigned char BYTE_SHIFT = 8;
@@ -39,6 +42,12 @@ namespace imageaos {
   };
 
   class Image : public image::Image {
+  struct Dimensions {
+      unsigned long width;
+      unsigned long height;
+  };
+
+  class Image : image::Image {
     public:
       static constexpr unsigned short DEFAULT_MAX_COLOR_VALUE = 255;
 
@@ -57,6 +66,26 @@ namespace imageaos {
       [[nodiscard]] unsigned long getWidth() const { return image::Image::getWidth(); }
       [[nodiscard]] unsigned long getHeight() const { return image::Image::getHeight(); }
 
+      static constexpr unsigned short DEFAULT_MAX_COLOR_VALUE = 255;
+
+      Image() : maxColorValue_(DEFAULT_MAX_COLOR_VALUE) { }
+
+      explicit Image(Dimensions const dimensions,
+                     unsigned short const maxColorValue = DEFAULT_MAX_COLOR_VALUE)
+        : maxColorValue_(maxColorValue) {
+        setWidth(dimensions.width);
+        setHeight(dimensions.height);
+        pixels_.resize(dimensions.width * dimensions.height);
+      }
+
+      [[nodiscard]] unsigned short getMaxColorValue() const { return maxColorValue_; }
+
+      void setMaxColorValue(unsigned short maxColorValue) { maxColorValue_ = maxColorValue; }
+
+      [[nodiscard]] unsigned long getWidth() const { return image::Image::getWidth(); }
+
+      [[nodiscard]] unsigned long getHeight() const { return image::Image::getHeight(); }
+
       Pixel & getPixel(unsigned long xPos, unsigned long yPos);
       [[nodiscard]] Pixel const & getPixel(unsigned long xPos, unsigned long yPos) const;
 
@@ -73,6 +102,7 @@ namespace imageaos {
       [[nodiscard]] Pixel interpolate(DimensionsResize dims) const;
       [[nodiscard]] Pixel interpolate2(InterpolateArgs const & interpolate_args) const;
       [[nodiscard]] bool saveToFileCompress(std::string const & filePath) const;
+      void cutfreq(std::uint32_t n);
 
     private:
       bool readPixelData(std::ifstream & file);
@@ -85,8 +115,28 @@ namespace imageaos {
                                  std::unordered_map<Pixel, unsigned long> const & colorTable) const;
 
       unsigned short maxColorValue_{};
+      [[nodiscard]] std::map<std::tuple<uint16_t, uint16_t, uint16_t>, int>
+          countColorFrequencies() const;
+      [[nodiscard]] static std::vector<std::pair<std::tuple<uint16_t, uint16_t, uint16_t>, int>>
+          sortColorsByFrequency(
+              std::map<std::tuple<uint16_t, uint16_t, uint16_t>, int> const & colorFrequency);
+      [[nodiscard]] static std::pair<std::vector<std::tuple<uint16_t, uint16_t, uint16_t>>,
+                                     std::vector<std::tuple<uint16_t, uint16_t, uint16_t>>>
+          splitColors(std::vector<std::pair<std::tuple<uint16_t, uint16_t, uint16_t>, int>> const &
+                          colorFreqVector,
+                      std::uint32_t n);
+      [[nodiscard]] static std::tuple<uint16_t, uint16_t, uint16_t> findClosestColor(
+          std::tuple<uint16_t, uint16_t, uint16_t> const & colorToRemove,
+          std::vector<std::tuple<uint16_t, uint16_t, uint16_t>> const & remainingColors);
+      [[nodiscard]] static std::map<std::tuple<uint16_t, uint16_t, uint16_t>,
+                                    std::tuple<uint16_t, uint16_t, uint16_t>>
+          buildReplacementMap(
+              std::pair<std::vector<std::tuple<uint16_t, uint16_t, uint16_t>> const &,
+                        std::vector<std::tuple<uint16_t, uint16_t, uint16_t>> const &> const &
+                  colors);
+      void replaceColors(std::map<std::tuple<uint16_t, uint16_t, uint16_t>,
+                                  std::tuple<uint16_t, uint16_t, uint16_t>> const & replacementMap);
+      unsigned short maxColorValue_;
       std::vector<Pixel> pixels_;
   };
 }  // namespace imageaos
-
-

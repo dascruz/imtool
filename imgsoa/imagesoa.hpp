@@ -2,6 +2,7 @@
 
 #include <common/image.hpp>
 #include <cstdint>
+#include <map>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -24,7 +25,6 @@ namespace imagesoa {
     public:
       Image() = default;
 
-      // Constructor que recibe Dimensions y configura las dimensiones de la imagen
       explicit Image(Dimensions const & dimensions) {
         setWidth(dimensions.width);
         setHeight(dimensions.height);
@@ -49,8 +49,7 @@ namespace imagesoa {
       [[nodiscard]] unsigned short calculatePixelColor(InterpolationCoords const & coords,
                                                        char channel) const;
       [[nodiscard]] bool saveToFileCompress(std::string const & filePath) const;
-
-
+      void cutfreq(uint32_t n);
 
     private:
       bool readPixelData(std::ifstream & file);
@@ -66,6 +65,27 @@ namespace imagesoa {
       std::vector<unsigned short> red_;
       std::vector<unsigned short> green_;
       std::vector<unsigned short> blue_;
+
+      [[nodiscard]] std::map<std::tuple<uint16_t, uint16_t, uint16_t>, int>
+          countColorFrequencies() const;
+      static std::vector<std::pair<std::tuple<uint16_t, uint16_t, uint16_t>, int>>
+          sortColorsByFrequency(
+              std::map<std::tuple<uint16_t, uint16_t, uint16_t>, int> const & colorFrequency);
+      static std::pair<std::vector<std::tuple<uint16_t, uint16_t, uint16_t>>,
+                       std::vector<std::tuple<uint16_t, uint16_t, uint16_t>>>
+          splitColors(std::vector<std::pair<std::tuple<uint16_t, uint16_t, uint16_t>, int>> const &
+                          colorFreqVector,
+                      uint32_t n);
+      static std::tuple<uint16_t, uint16_t, uint16_t> findClosestColor(
+          std::tuple<uint16_t, uint16_t, uint16_t> const & colorToRemove,
+          std::vector<std::tuple<uint16_t, uint16_t, uint16_t>> const & remainingColors);
+      static std::map<std::tuple<uint16_t, uint16_t, uint16_t>,
+                      std::tuple<uint16_t, uint16_t, uint16_t>>
+          buildReplacementMap(
+              std::pair<std::vector<std::tuple<uint16_t, uint16_t, uint16_t>>,
+                        std::vector<std::tuple<uint16_t, uint16_t, uint16_t>>> const & colors);
+      void replaceColors(std::map<std::tuple<uint16_t, uint16_t, uint16_t>,
+                                  std::tuple<uint16_t, uint16_t, uint16_t>> const & replacementMap);
   };
 
   inline unsigned short Image::getRed(unsigned long const xPos, unsigned long const yPos) const {

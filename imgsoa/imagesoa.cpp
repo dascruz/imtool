@@ -1,6 +1,6 @@
+#include <common/image.hpp>
 #include <fstream>
 #include <imgsoa/imagesoa.hpp>
-#include <common/image.hpp>
 #include <iostream>
 
 namespace imagesoa {
@@ -30,12 +30,11 @@ namespace imagesoa {
           return false;
         }
 
-        red_[index] = red;
+        red_[index]   = red;
         green_[index] = green;
-        blue_[index] = blue;
+        blue_[index]  = blue;
       }
     }
-
     return true;
   }
 
@@ -78,7 +77,6 @@ namespace imagesoa {
         }
       }
     }
-
     return file.good();
   }
 
@@ -100,15 +98,17 @@ namespace imagesoa {
     return pixelDataWritten;
   }
 
-
   void Image::modifyMaxLevel(unsigned short const newMaxColorValue) {
     for (unsigned long yPos = 0; yPos < getHeight(); ++yPos) {
       for (unsigned long xPos = 0; xPos < getWidth(); ++xPos) {
         unsigned long const index = (yPos * getWidth()) + xPos;
 
-        red_[index] = static_cast<unsigned short>(red_[index] * newMaxColorValue / getMaxColorValue());
-        green_[index] = static_cast<unsigned short>(green_[index] * newMaxColorValue / getMaxColorValue());
-        blue_[index] = static_cast<unsigned short>(blue_[index] * newMaxColorValue / getMaxColorValue());
+        red_[index] =
+            static_cast<unsigned short>(red_[index] * newMaxColorValue / getMaxColorValue());
+        green_[index] =
+            static_cast<unsigned short>(green_[index] * newMaxColorValue / getMaxColorValue());
+        blue_[index] =
+            static_cast<unsigned short>(blue_[index] * newMaxColorValue / getMaxColorValue());
       }
     }
 
@@ -121,4 +121,5 @@ namespace imagesoa {
               << "Height: " << getHeight() << "\n"
               << "Max Color Value: " << getMaxColorValue() << "\n";
   }
+
 }  // namespace imagesoa

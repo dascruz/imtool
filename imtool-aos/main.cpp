@@ -22,6 +22,10 @@ int main(int const argc, char * argv[]) {
       image.resize(parsedOperationArgs.args[0], parsedOperationArgs.args[1]);
       if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return EXIT_FAILURE; }
       break;
+    case progargs::CutFreq:
+      image.cutfreq(parsedOperationArgs.args[0]);
+      if (!image.saveToFile(parsedOperationArgs.outputFilePath)) { return EXIT_FAILURE; }
+      break;
     case progargs::Compress:
       if (!image.saveToFileCompress(parsedOperationArgs.outputFilePath)) { return EXIT_FAILURE; }
       break;

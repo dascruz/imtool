@@ -18,11 +18,11 @@ namespace progargs {
       std::string inputFilePath;
       std::string outputFilePath;
       OperationType operation;
-      std::vector<std::uint16_t> args;
+      std::vector<std::uint32_t> args;
 
       explicit ParsedOperationArgs(std::string inputPath = "", std::string outputPath = "",
                                    OperationType operationType          = Invalid,
-                                   std::vector<std::uint16_t> arguments = {})
+                                   std::vector<std::uint32_t> arguments = {})
         : inputFilePath(std::move(inputPath)), outputFilePath(std::move(outputPath)),
           operation(operationType), args(std::move(arguments)) { }
   };
