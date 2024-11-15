@@ -1,6 +1,7 @@
 #pragma once
 
 #include <common/image.hpp>
+#include <cstdint>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -9,8 +10,29 @@ namespace imagesoa {
   constexpr unsigned char BYTE_SHIFT = 8;
   constexpr unsigned char BYTE_MASK  = 0xFF;
 
+  struct Dimensions {
+      unsigned long width;
+      unsigned long height;
+  };
+
+  struct InterpolationCoords {
+      std::uint32_t x_l, y_l, x_h, y_h;
+      double x_weight, y_weight;
+  };
+
   class Image : public image::Image {
     public:
+      Image() = default;
+
+      // Constructor que recibe Dimensions y configura las dimensiones de la imagen
+      explicit Image(Dimensions const & dimensions) {
+        setWidth(dimensions.width);
+        setHeight(dimensions.height);
+        red_.resize(getWidth() * getHeight());
+        green_.resize(getWidth() * getHeight());
+        blue_.resize(getWidth() * getHeight());
+      }
+
       [[nodiscard]] unsigned short getRed(unsigned long xPos, unsigned long yPos) const;
       [[nodiscard]] unsigned short getGreen(unsigned long xPos, unsigned long yPos) const;
       [[nodiscard]] unsigned short getBlue(unsigned long xPos, unsigned long yPos) const;
@@ -23,7 +45,12 @@ namespace imagesoa {
       [[nodiscard]] bool saveToFile(std::string const & filePath) const;
       void displayMetadata() const;
       void modifyMaxLevel(unsigned short newMaxColorValue);
+      void resize(unsigned long new_width, unsigned long new_height);
+      [[nodiscard]] unsigned short calculatePixelColor(InterpolationCoords const & coords,
+                                                       char channel) const;
       [[nodiscard]] bool saveToFileCompress(std::string const & filePath) const;
+
+
 
     private:
       bool readPixelData(std::ifstream & file);
