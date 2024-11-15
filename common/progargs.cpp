@@ -85,9 +85,9 @@ namespace progargs {
         printErrorAndExit("Invalid number of extra arguments for cutfreq: " +
                           std::to_string(operationArgs.args.size()));
       }
-      int cutFreq = 0;
+      std::uint32_t cutFreq = 0;
       try {
-        cutFreq = std::stoi(operationArgs.args[0]);
+        cutFreq = static_cast<std::uint32_t>(std::stoul(operationArgs.args[0]));
       } catch (std::invalid_argument const &) {
         printErrorAndExit("Invalid cutfreq: non-integer value provided");
       } catch (std::out_of_range const &) {
@@ -100,7 +100,7 @@ namespace progargs {
       parsedArgs.inputFilePath  = operationArgs.inputFilePath;
       parsedArgs.outputFilePath = operationArgs.outputFilePath;
       parsedArgs.operation      = CutFreq;
-      parsedArgs.args           = {static_cast<std::uint16_t>(cutFreq)};
+      parsedArgs.args           = {cutFreq};
 
       return parsedArgs;
     }

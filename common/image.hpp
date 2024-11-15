@@ -23,7 +23,6 @@ namespace image {
       bool writeHeader(std::ofstream & file) const;
       bool writeHeaderCompress(std::ofstream & file, unsigned long colorTableSize) const;
 
-    protected:
       [[nodiscard]] unsigned long getWidth() const { return width_; }
 
       [[nodiscard]] unsigned long getHeight() const { return height_; }
