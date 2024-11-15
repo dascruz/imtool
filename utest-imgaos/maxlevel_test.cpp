@@ -63,7 +63,6 @@ namespace imageaos {
   TEST_F(ImageTest, ModifyMaxLevelNoChangeIfSameMaxValue) {
     unsigned short const originalMaxColorValue = getImage().getMaxColorValue();
 
-    // Almacenar los valores originales de los píxeles antes de intentar modificar el nivel
     std::vector<std::vector<Pixel>> originalPixels(IMAGE_DIMENSIONS.height, std::vector<Pixel>(IMAGE_DIMENSIONS.width));
     for (unsigned long y_pos = 0; y_pos < IMAGE_DIMENSIONS.height; ++y_pos) {
       for (unsigned long x_pos = 0; x_pos < IMAGE_DIMENSIONS.width; ++x_pos) {
@@ -71,7 +70,6 @@ namespace imageaos {
       }
     }
 
-    // Aplicar modifyMaxLevel con el mismo valor máximo actual
     getImage().modifyMaxLevel(originalMaxColorValue);
 
     for (unsigned long y_pos = 0; y_pos < IMAGE_DIMENSIONS.height; ++y_pos) {
@@ -79,7 +77,6 @@ namespace imageaos {
         Pixel const& pixel = getImage().getPixel(x_pos, y_pos);
         Pixel const& originalPixel = originalPixels[y_pos][x_pos];
 
-        // Los valores no deben cambiar
         EXPECT_EQ(pixel.red, originalPixel.red);
         EXPECT_EQ(pixel.green, originalPixel.green);
         EXPECT_EQ(pixel.blue, originalPixel.blue);
@@ -92,7 +89,6 @@ namespace imageaos {
     constexpr unsigned short newMaxColorValue = 1;
     unsigned short const originalMaxColorValue = getImage().getMaxColorValue();
 
-    // Almacenar los valores originales de los píxeles antes de escalar
     std::vector<std::vector<Pixel>> originalPixels(IMAGE_DIMENSIONS.height, std::vector<Pixel>(IMAGE_DIMENSIONS.width));
     for (unsigned long y_pos = 0; y_pos < IMAGE_DIMENSIONS.height; ++y_pos) {
       for (unsigned long x_pos = 0; x_pos < IMAGE_DIMENSIONS.width; ++x_pos) {
@@ -100,7 +96,6 @@ namespace imageaos {
       }
     }
 
-    // Aplicar modifyMaxLevel con el valor mínimo
     getImage().modifyMaxLevel(newMaxColorValue);
 
     for (unsigned long y_pos = 0; y_pos < IMAGE_DIMENSIONS.height; ++y_pos) {
@@ -125,7 +120,6 @@ namespace imageaos {
     constexpr unsigned short newMaxColorValue = 65535;
     unsigned short const originalMaxColorValue = getImage().getMaxColorValue();
 
-    // Almacenar los valores originales de los píxeles antes de escalar
     std::vector<std::vector<Pixel>> originalPixels(IMAGE_DIMENSIONS.height, std::vector<Pixel>(IMAGE_DIMENSIONS.width));
     for (unsigned long y_pos = 0; y_pos < IMAGE_DIMENSIONS.height; ++y_pos) {
       for (unsigned long x_pos = 0; x_pos < IMAGE_DIMENSIONS.width; ++x_pos) {
@@ -133,7 +127,6 @@ namespace imageaos {
       }
     }
 
-    // Aplicar modifyMaxLevel con el valor máximo permitido
     getImage().modifyMaxLevel(newMaxColorValue);
 
     for (unsigned long y_pos = 0; y_pos < IMAGE_DIMENSIONS.height; ++y_pos) {
@@ -165,10 +158,8 @@ namespace imageaos {
       }
     }
 
-    // Aplicar modifyMaxLevel
     getImage().modifyMaxLevel(newMaxColorValue);
 
-    // Verificar que todos los valores de los píxeles sigan siendo 0
     for (unsigned long y_pos = 0; y_pos < IMAGE_DIMENSIONS.height; ++y_pos) {
       for (unsigned long x_pos = 0; x_pos < IMAGE_DIMENSIONS.width; ++x_pos) {
         Pixel const& pixel = getImage().getPixel(x_pos, y_pos);
